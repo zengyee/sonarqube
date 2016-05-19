@@ -193,7 +193,7 @@ public class PostProjectAnalysisTaskTester {
 
         @Override
         public ScannerContext getScannerContext() {
-          return null;
+          return scannerContext;
         }
 
         @Override

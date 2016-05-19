@@ -34,10 +34,13 @@ import org.junit.runners.model.Statement;
 import org.sonar.core.util.CloseableIterator;
 import org.sonar.scanner.protocol.output.ScannerReport;
 
+import static java.util.Objects.requireNonNull;
+
 public class BatchReportReaderRule implements TestRule, BatchReportReader {
   private ScannerReport.Metadata metadata;
   private List<String> scannerLogs;
   private List<ScannerReport.ActiveRule> activeRules = new ArrayList<>();
+  private List<ScannerReport.ContextProperty> contextProperties = new ArrayList<>();
   private Map<Integer, List<ScannerReport.Measure>> measures = new HashMap<>();
   private Map<Integer, ScannerReport.Changesets> changesets = new HashMap<>();
   private Map<Integer, ScannerReport.Component> components = new HashMap<>();
@@ -118,6 +121,16 @@ public class BatchReportReaderRule implements TestRule, BatchReportReader {
 
   public BatchReportReaderRule putActiveRules(List<ScannerReport.ActiveRule> activeRules) {
     this.activeRules = activeRules;
+    return this;
+  }
+
+  @Override
+  public CloseableIterator<ScannerReport.ContextProperty> readContextProperties() {
+    return CloseableIterator.from(contextProperties.iterator());
+  }
+
+  public BatchReportReaderRule putContextProperties(List<ScannerReport.ContextProperty> contextProperties) {
+    this.contextProperties = requireNonNull(contextProperties);
     return this;
   }
 

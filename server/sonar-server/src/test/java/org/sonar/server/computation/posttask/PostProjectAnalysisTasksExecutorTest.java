@@ -34,7 +34,9 @@ import org.mockito.InOrder;
 import org.sonar.api.ce.posttask.PostProjectAnalysisTask;
 import org.sonar.api.ce.posttask.Project;
 import org.sonar.ce.queue.CeTask;
+import org.sonar.scanner.protocol.output.ScannerReport;
 import org.sonar.server.computation.analysis.AnalysisMetadataHolderRule;
+import org.sonar.server.computation.batch.BatchReportReaderRule;
 import org.sonar.server.computation.metric.Metric;
 import org.sonar.server.computation.qualitygate.Condition;
 import org.sonar.server.computation.qualitygate.ConditionStatus;
@@ -44,7 +46,9 @@ import org.sonar.server.computation.qualitygate.QualityGate;
 import org.sonar.server.computation.qualitygate.QualityGateStatus;
 
 import static com.google.common.collect.ImmutableList.of;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.data.MapEntry.entry;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -64,6 +68,8 @@ public class PostProjectAnalysisTasksExecutorTest {
   public MutableQualityGateHolderRule qualityGateHolder = new MutableQualityGateHolderRule();
   @Rule
   public MutableQualityGateStatusHolderRule qualityGateStatusHolder = new MutableQualityGateStatusHolderRule();
+  @Rule
+  public BatchReportReaderRule reportReader = new BatchReportReaderRule();
 
   private ArgumentCaptor<PostProjectAnalysisTask.ProjectAnalysis> projectAnalysisArgumentCaptor = ArgumentCaptor.forClass(PostProjectAnalysisTask.ProjectAnalysis.class);
   private CeTask ceTask = new CeTask.Builder()
@@ -76,7 +82,7 @@ public class PostProjectAnalysisTasksExecutorTest {
   private PostProjectAnalysisTask postProjectAnalysisTask = mock(PostProjectAnalysisTask.class);
   private PostProjectAnalysisTasksExecutor underTest = new PostProjectAnalysisTasksExecutor(
     ceTask, analysisMetadataHolder, qualityGateHolder, qualityGateStatusHolder,
-    new PostProjectAnalysisTask[] {postProjectAnalysisTask});
+    reportReader, new PostProjectAnalysisTask[] {postProjectAnalysisTask});
 
   @Before
   public void setUp() throws Exception {
@@ -89,7 +95,7 @@ public class PostProjectAnalysisTasksExecutorTest {
   @Test
   @UseDataProvider("booleanValues")
   public void does_not_fail_when_there_is_no_PostProjectAnalysisTasksExecutor(boolean allStepsExecuted) {
-    new PostProjectAnalysisTasksExecutor(ceTask, analysisMetadataHolder, qualityGateHolder, qualityGateStatusHolder)
+    new PostProjectAnalysisTasksExecutor(ceTask, analysisMetadataHolder, qualityGateHolder, qualityGateStatusHolder, reportReader)
       .finished(allStepsExecuted);
   }
 
@@ -102,8 +108,8 @@ public class PostProjectAnalysisTasksExecutorTest {
 
     new PostProjectAnalysisTasksExecutor(
       ceTask, analysisMetadataHolder, qualityGateHolder, qualityGateStatusHolder,
-      new PostProjectAnalysisTask[] {postProjectAnalysisTask1, postProjectAnalysisTask2})
-        .finished(allStepsExecuted);
+      reportReader, new PostProjectAnalysisTask[] {postProjectAnalysisTask1, postProjectAnalysisTask2})
+      .finished(allStepsExecuted);
 
     inOrder.verify(postProjectAnalysisTask1).finished(projectAnalysisArgumentCaptor.capture());
     inOrder.verify(postProjectAnalysisTask2).finished(projectAnalysisArgumentCaptor.capture());
@@ -178,6 +184,17 @@ public class PostProjectAnalysisTasksExecutorTest {
     assertThat(qualityGate.getId()).isEqualTo(String.valueOf(QUALITY_GATE_ID));
     assertThat(qualityGate.getName()).isEqualTo(QUALITY_GATE_NAME);
     assertThat(qualityGate.getConditions()).hasSize(2);
+  }
+
+  @Test
+  public void scannerContext_loads_properties_from_scanner_report() {
+    reportReader.putContextProperties(asList(ScannerReport.ContextProperty.newBuilder().setKey("foo").setValue("bar").build()));
+    underTest.finished(true);
+
+    verify(postProjectAnalysisTask).finished(projectAnalysisArgumentCaptor.capture());
+
+    org.sonar.api.ce.posttask.ScannerContext scannerContext = projectAnalysisArgumentCaptor.getValue().getScannerContext();
+    assertThat(scannerContext.getProperties()).containsExactly(entry("foo", "bar"));
   }
 
   @DataProvider

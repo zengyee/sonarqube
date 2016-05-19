@@ -74,6 +74,11 @@ public class BatchReportReaderImpl implements BatchReportReader {
   }
 
   @Override
+  public CloseableIterator<ScannerReport.ContextProperty> readContextProperties() {
+    return delegate.readContextProperties();
+  }
+
+  @Override
   public CloseableIterator<ScannerReport.Measure> readComponentMeasures(int componentRef) {
     return delegate.readComponentMeasures(componentRef);
   }

@@ -19,6 +19,7 @@
  */
 package org.sonar.api.ce.posttask;
 
+import com.google.common.annotations.Beta;
 import java.util.Date;
 import javax.annotation.CheckForNull;
 import org.sonar.api.ExtensionPoint;
@@ -74,5 +75,14 @@ public interface PostProjectAnalysisTask {
      * 
      */
     Date getDate();
+
+    /**
+     * Context as defined by scanner through {@link org.sonar.api.batch.sensor.SensorContext#storeProperty(String, String)}.
+     * It does not contain the settings used during analysis.
+     *
+     * @since 5.6
+     */
+    @Beta
+    ScannerContext getScannerContext();
   }
 }

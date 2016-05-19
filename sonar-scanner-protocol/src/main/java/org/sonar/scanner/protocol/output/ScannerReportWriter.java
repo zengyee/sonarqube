@@ -138,4 +138,9 @@ public class ScannerReportWriter {
     return fileStructure.fileFor(FileStructure.Domain.SOURCE, componentRef);
   }
 
+  public File writeContextProperties(Iterable<ScannerReport.ContextProperty> properties) {
+    File file = fileStructure.contextProperties();
+    Protobuf.writeStream(properties, file, false);
+    return file;
+  }
 }

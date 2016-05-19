@@ -134,4 +134,8 @@ public class DefaultSensorContext implements SensorContext {
     return new DefaultCpdTokens(settings, sensorStorage);
   }
 
+  @Override
+  public void storeProperty(String key, String value) {
+    sensorStorage.storeProperty(key, value);
+  }
 }

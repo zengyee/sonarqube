@@ -38,6 +38,7 @@ import org.sonar.batch.bootstrap.ExtensionInstaller;
 import org.sonar.batch.bootstrap.ExtensionMatcher;
 import org.sonar.batch.bootstrap.ExtensionUtils;
 import org.sonar.batch.bootstrap.MetricProvider;
+import org.sonar.batch.context.ContextPropertiesCache;
 import org.sonar.batch.cpd.CpdExecutor;
 import org.sonar.batch.cpd.index.SonarCpdBlockIndex;
 import org.sonar.batch.events.EventBus;
@@ -58,6 +59,7 @@ import org.sonar.batch.profiling.PhasesSumUpTimeProfiler;
 import org.sonar.batch.report.ActiveRulesPublisher;
 import org.sonar.batch.report.AnalysisContextReportPublisher;
 import org.sonar.batch.report.ComponentsPublisher;
+import org.sonar.batch.report.ContextPropertiesPublisher;
 import org.sonar.batch.report.CoveragePublisher;
 import org.sonar.batch.report.MeasuresPublisher;
 import org.sonar.batch.report.MetadataPublisher;
@@ -173,6 +175,10 @@ public class ProjectScanContainer extends ComponentContainer {
 
       // Measures
       MeasureCache.class,
+
+      // context
+      ContextPropertiesCache.class,
+      ContextPropertiesPublisher.class,
 
       ProjectSettings.class,
 

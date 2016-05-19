@@ -67,6 +67,10 @@ public class FileStructure {
     return new File(dir, "analysis.log");
   }
 
+  public File contextProperties() {
+    return new File(dir, "context-props.pb");
+  }
+
   public File activeRules() {
     return new File(dir, "activerules.pb");
   }

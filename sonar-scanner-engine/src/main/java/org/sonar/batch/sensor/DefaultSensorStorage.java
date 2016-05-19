@@ -29,13 +29,11 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.fs.InputComponent;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.fs.TextRange;
 import org.sonar.api.batch.fs.internal.DefaultInputFile;
 import org.sonar.api.batch.measure.MetricFinder;
-import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.sensor.coverage.CoverageType;
 import org.sonar.api.batch.sensor.coverage.internal.DefaultCoverage;
 import org.sonar.api.batch.sensor.cpd.internal.DefaultCpdTokens;
@@ -53,6 +51,7 @@ import org.sonar.api.resources.File;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.utils.KeyValueFormat;
 import org.sonar.api.utils.SonarException;
+import org.sonar.batch.context.ContextPropertiesCache;
 import org.sonar.batch.cpd.deprecated.DefaultCpdBlockIndexer;
 import org.sonar.batch.cpd.index.SonarCpdBlockIndex;
 import org.sonar.batch.index.BatchComponent;
@@ -75,7 +74,7 @@ public class DefaultSensorStorage implements SensorStorage {
     // Computed by LinesSensor
     CoreMetrics.LINES);
 
-  private static final List<String> DEPRECATED_METRICS_KEYS = Arrays.<String>asList(
+  private static final List<String> DEPRECATED_METRICS_KEYS = Arrays.asList(
     CoreMetrics.DEPENDENCY_MATRIX_KEY,
     CoreMetrics.DIRECTORY_CYCLES_KEY,
     CoreMetrics.DIRECTORY_EDGES_WEIGHT_KEY,
@@ -97,10 +96,12 @@ public class DefaultSensorStorage implements SensorStorage {
   private final MeasureCache measureCache;
   private final SonarCpdBlockIndex index;
   private final Settings settings;
+  private final ContextPropertiesCache contextPropertiesCache;
 
-  public DefaultSensorStorage(MetricFinder metricFinder, ModuleIssues moduleIssues,
-    Settings settings, FileSystem fs, ActiveRules activeRules,
-    CoverageExclusions coverageExclusions, BatchComponentCache componentCache, ReportPublisher reportPublisher, MeasureCache measureCache, SonarCpdBlockIndex index) {
+  public DefaultSensorStorage(MetricFinder metricFinder, ModuleIssues moduleIssues, Settings settings,
+    CoverageExclusions coverageExclusions, BatchComponentCache componentCache, ReportPublisher reportPublisher,
+    MeasureCache measureCache, SonarCpdBlockIndex index,
+    ContextPropertiesCache contextPropertiesCache) {
     this.metricFinder = metricFinder;
     this.moduleIssues = moduleIssues;
     this.settings = settings;
@@ -109,6 +110,7 @@ public class DefaultSensorStorage implements SensorStorage {
     this.reportPublisher = reportPublisher;
     this.measureCache = measureCache;
     this.index = index;
+    this.contextPropertiesCache = contextPropertiesCache;
   }
 
   private Metric findMetricOrFail(String metricKey) {
@@ -282,4 +284,8 @@ public class DefaultSensorStorage implements SensorStorage {
     return blockSize;
   }
 
+  @Override
+  public void storeProperty(String key, String value) {
+    contextPropertiesCache.put(key, value);
+  }
 }

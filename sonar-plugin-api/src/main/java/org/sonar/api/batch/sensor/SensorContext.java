@@ -113,4 +113,8 @@ public interface SensorContext {
    */
   NewCpdTokens newCpdTokens();
 
+  /**
+   * @since 5.6
+   */
+  void storeProperty(String key, String value);
 }

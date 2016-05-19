@@ -43,6 +43,7 @@ import org.sonar.api.rule.RuleKey;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
+import static org.assertj.core.data.MapEntry.entry;
 
 public class SensorContextTesterTest {
 
@@ -151,7 +152,8 @@ public class SensorContextTesterTest {
       .newReference(1, 10, 1, 13);
 
     symbolTable.save();
-    assertThat(tester.referencesForSymbolAt("foo:src/Foo.java", 1, 3)).extracting("start.line", "start.lineOffset", "end.line", "end.lineOffset").containsExactly(tuple(1, 6, 1, 9),
+    assertThat(tester.referencesForSymbolAt("foo:src/Foo.java", 1, 3)).extracting("start.line", "start.lineOffset", "end.line", "end.lineOffset").containsExactly(
+      tuple(1, 6, 1, 9),
       tuple(1, 10, 1, 13));
   }
 
@@ -226,5 +228,13 @@ public class SensorContextTesterTest {
       .containsExactly(
         tuple("publicclass$IDENTIFIER{", 1, 1, 4),
         tuple("}", 3, 5, 5));
+  }
+
+  @Test
+  public void testContextProperties() {
+    assertThat(tester.getContextProperties()).isEmpty();
+
+    tester.storeProperty("foo", "bar");
+    assertThat(tester.getContextProperties()).containsOnly(entry("foo", "bar"));
   }
 }

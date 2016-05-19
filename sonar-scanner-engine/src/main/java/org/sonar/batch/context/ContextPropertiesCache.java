@@ -17,43 +17,18 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.api.batch.sensor.internal;
+package org.sonar.batch.context;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.sonar.api.batch.BatchSide;
-import org.sonar.api.batch.sensor.coverage.internal.DefaultCoverage;
-import org.sonar.api.batch.sensor.cpd.internal.DefaultCpdTokens;
-import org.sonar.api.batch.sensor.highlighting.internal.DefaultHighlighting;
-import org.sonar.api.batch.sensor.issue.Issue;
-import org.sonar.api.batch.sensor.measure.Measure;
-import org.sonar.api.batch.sensor.symbol.internal.DefaultSymbolTable;
 
-/**
- * Interface for storing data computed by sensors.
- * @since 5.1
- */
+import static com.google.common.base.Preconditions.checkArgument;
+
 @BatchSide
-public interface SensorStorage {
+public class ContextPropertiesCache {
 
-  void store(Measure measure);
-
-  void store(Issue issue);
-
-  void store(DefaultHighlighting highlighting);
-
-  /**
-   * @since 5.2
-   */
-  void store(DefaultCoverage defaultCoverage);
-
-  /**
-   * @since 5.5 
-   */
-  void store(DefaultCpdTokens defaultCpdTokens);
-
-  /**
-   * @since 5.6 
-   */
-  void store(DefaultSymbolTable symbolTable);
+  private final Map<String, String> props = new HashMap<>();
 
   /**
    * Value is overridden if the key was already stored.
@@ -61,5 +36,14 @@ public interface SensorStorage {
    * @throws IllegalArgumentException if value is null
    * @since 5.6
    */
-  void storeProperty(String key, String value);
+  public ContextPropertiesCache put(String key, String value) {
+    checkArgument(key != null, "Key of context property must not be null");
+    checkArgument(value != null, "Value of context property must not be null");
+    props.put(key, value);
+    return this;
+  }
+
+  public Map<String, String> getAll() {
+    return props;
+  }
 }

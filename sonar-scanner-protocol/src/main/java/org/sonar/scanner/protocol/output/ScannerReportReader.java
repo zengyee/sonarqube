@@ -50,6 +50,14 @@ public class ScannerReportReader {
     return Protobuf.readStream(file, ScannerReport.ActiveRule.parser());
   }
 
+  public CloseableIterator<ScannerReport.ContextProperty> readContextProperties() {
+    File file = fileStructure.contextProperties();
+    if (!fileExists(file)) {
+      return emptyCloseableIterator();
+    }
+    return Protobuf.readStream(file, ScannerReport.ContextProperty.parser());
+  }
+
   public CloseableIterator<ScannerReport.Measure> readComponentMeasures(int componentRef) {
     File file = fileStructure.fileFor(FileStructure.Domain.MEASURES, componentRef);
     if (fileExists(file)) {

@@ -20,6 +20,7 @@
 package org.sonar.api.batch.sensor.internal;
 
 import com.google.common.annotations.Beta;
+import com.google.common.collect.ImmutableMap;
 import java.io.File;
 import java.io.Serializable;
 import java.nio.file.Path;
@@ -287,4 +288,17 @@ public class SensorContextTester implements SensorContext {
     return Collections.emptyList();
   }
 
+  @Override
+  public void storeProperty(String key, String value) {
+    sensorStorage.storeProperty(key, value);
+  }
+
+  /**
+   * @return an immutable map of the context properties defined with {@link SensorContext#storeProperty(String, String)}.
+   * @since 5.6
+   */
+  @Beta
+  public Map<String, String> getContextProperties() {
+    return ImmutableMap.copyOf(sensorStorage.contextProperties);
+  }
 }

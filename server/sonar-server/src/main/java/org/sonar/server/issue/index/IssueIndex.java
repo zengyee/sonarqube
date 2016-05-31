@@ -60,6 +60,7 @@ import org.elasticsearch.search.aggregations.bucket.terms.TermsBuilder;
 import org.elasticsearch.search.aggregations.metrics.min.Min;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.joda.time.Duration;
+import org.jruby.ext.tracepoint.TracePoint$INVOKER$i$0$0$method_id;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.resources.Scopes;
 import org.sonar.api.utils.DateUtils;

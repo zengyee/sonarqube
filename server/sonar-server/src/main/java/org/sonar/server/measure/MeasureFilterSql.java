@@ -114,7 +114,7 @@ class MeasureFilterSql {
     if (filter.sort().isOnMeasure()) {
       sb.append(" LEFT OUTER JOIN project_measures pmsort ON s.id=pmsort.snapshot_id AND pmsort.metric_id=");
       sb.append(filter.sort().metric().getId());
-      sb.append(" AND pmsort.rule_id IS NULL AND pmsort.rule_priority IS NULL AND pmsort.characteristic_id IS NULL AND pmsort.person_id IS NULL ");
+      sb.append(" AND pmsort.person_id IS NULL ");
     }
 
     sb.append(" WHERE ");

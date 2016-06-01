@@ -404,10 +404,9 @@ public class PersistMeasuresStepTest extends BaseStepTest {
   private List<Map<String, Object>> selectSnapshots() {
     return dbTester
       .select(
-      "SELECT snapshot_id as \"snapshotId\", project_id as \"componentId\", metric_id as \"metricId\", rule_id as \"ruleId\", characteristic_id as \"characteristicId\", person_id as \"developerId\", "
+      "SELECT snapshot_id as \"snapshotId\", project_id as \"componentId\", metric_id as \"metricId\", person_id as \"developerId\", "
         +
         "value as \"value\", text_value as \"textValue\", " +
-        "rule_priority as \"severity\", " +
         "variation_value_1 as \"variation_value_1\", " +
         "variation_value_2 as \"variation_value_2\", " +
         "variation_value_3 as \"variation_value_3\", " +

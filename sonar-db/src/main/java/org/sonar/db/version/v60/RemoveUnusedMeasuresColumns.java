@@ -19,5 +19,47 @@
  */
 package org.sonar.db.version.v60;
 
-public class RemoveUnusedMeasuresColumns {
+import com.google.common.annotations.VisibleForTesting;
+import org.sonar.db.Database;
+import org.sonar.db.version.DdlChange;
+import org.sonar.db.version.DropColumnsBuilder;
+import java.sql.SQLException;
+
+/**
+ * Drop the following columns from the project_measures table :
+ * - rule_id
+ * - rule_category_id
+ * - tendency
+ * - url
+ * - measure_date
+ * - url
+ * - rule_priority
+ * - Characteristic_id
+ */
+
+public class RemoveUnusedMeasuresColumns extends DdlChange {
+
+    private final Database db;
+
+    public RemoveUnusedMeasuresColumns(Database db) {
+        super(db);
+        this.db = db;
+    }
+
+    @Override
+    public void execute(Context context) throws SQLException {
+        context.execute(generateSql());
+    }
+
+    @VisibleForTesting
+    String generateSql() {
+        return new DropColumnsBuilder(db.getDialect(), "project_measures",
+                "rule_id", "rules_category_id", "tendency", "measure_date", "url", "rule_priority", "characteristic_id")
+                .build();
+    }
+
 }
+
+
+
+

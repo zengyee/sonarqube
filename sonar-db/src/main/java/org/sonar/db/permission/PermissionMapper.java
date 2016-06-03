@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
+import org.sonar.db.component.ComponentDto;
 
 public interface PermissionMapper {
 
@@ -37,4 +38,8 @@ public interface PermissionMapper {
   void usersCountByProjectIdAndPermission(Map<String, Object> parameters, ResultHandler resultHandler);
 
   void groupsCountByProjectIdAndPermission(Map<String, Object> parameters, ResultHandler resultHandler);
+
+  List<ComponentDto> selectProjectsByUser(Map<String, Object> parameters);
+
+  int countProjectsByUser(Map<String, Object> parameters);
 }

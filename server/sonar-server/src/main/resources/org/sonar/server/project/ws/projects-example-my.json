@@ -1,0 +1,19 @@
+{
+  "projects": [
+    {
+      "id": "ce4c03d6-430f-40a9-b777-ad877c00aa4d",
+      "key": "clang",
+      "name": "Clang"
+    },
+    {
+      "id": "0bd7b1e7-91d6-439e-a607-4a3a9aad3c6a",
+      "key": "net.java.openjdk:jdk7",
+      "name": "JDK 7"
+    }
+  ],
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 100,
+    "total": 2
+  }
+}

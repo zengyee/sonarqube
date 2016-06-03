@@ -143,4 +143,28 @@
     </where>
     ORDER BY groups.name
   </select>
+
+  <select id="selectProjectsByUser" parameterType="map" resultType="org.sonar.db.component.ComponentDto">
+    SELECT p.uuid, p.kee, p.name, p.description
+    FROM projects p
+    JOIN user_roles ur ON ur.resource_id=p.id
+    <where>
+      ur.user_id=#{userId}
+      AND ur.role=#{permission}
+      AND p.qualifier='TRK'
+    </where>
+    ORDER BY p.name
+    LIMIT #{pageSize} OFFSET #{offset}
+  </select>
+
+  <select id="countProjectsByUser" parameterType="map" resultType="int">
+    SELECT COUNT(1)
+    FROM projects p
+    JOIN user_roles ur ON ur.resource_id=p.id
+    <where>
+      ur.user_id=#{userId}
+      AND ur.role=#{permission}
+      AND p.qualifier='TRK'
+    </where>
+  </select>
 </mapper>

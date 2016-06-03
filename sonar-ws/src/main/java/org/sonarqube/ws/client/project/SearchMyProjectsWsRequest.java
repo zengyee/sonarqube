@@ -17,19 +17,43 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.server.project.ws;
+package org.sonarqube.ws.client.project;
 
-import org.sonar.core.platform.Module;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 
-public class ProjectsWsModule extends Module {
-  @Override
-  protected void configureModule() {
-    add(
-      ProjectsWs.class,
-      BulkDeleteAction.class,
-      DeleteAction.class,
-      GhostsAction.class,
-      ProvisionedAction.class,
-      SearchMyProjectsAction.class);
+public class SearchMyProjectsWsRequest {
+  private Integer page;
+  private Integer pageSize;
+  private Integer userId;
+
+  @CheckForNull
+  public Integer getPage() {
+    return page;
+  }
+
+  public SearchMyProjectsWsRequest setPage(int page) {
+    this.page = page;
+    return this;
+  }
+
+  @CheckForNull
+  public Integer getPageSize() {
+    return pageSize;
+  }
+
+  public SearchMyProjectsWsRequest setPageSize(int pageSize) {
+    this.pageSize = pageSize;
+    return this;
+  }
+
+  @CheckForNull
+  public Integer getUserId() {
+    return userId;
+  }
+
+  public SearchMyProjectsWsRequest setUserId(Integer userId) {
+    this.userId = userId;
+    return this;
   }
 }

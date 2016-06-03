@@ -1,0 +1,15 @@
+{
+  "projects": [
+    {
+      "id": "0bd7b1e7-91d6-439e-a607-4a3a9aad3c6a",
+      "key": "net.java.openjdk:jdk7",
+      "name": "JDK 7",
+      "description": "JDK"
+    }
+  ],
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 100,
+    "total": 1
+  }
+}

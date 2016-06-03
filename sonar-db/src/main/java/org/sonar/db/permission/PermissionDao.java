@@ -27,9 +27,11 @@ import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 import org.apache.ibatis.session.SqlSession;
 import org.sonar.api.security.DefaultGroups;
+import org.sonar.api.utils.Paging;
 import org.sonar.db.Dao;
 import org.sonar.db.DbSession;
 import org.sonar.db.MyBatis;
+import org.sonar.db.component.ComponentDto;
 
 import static com.google.common.collect.Maps.newHashMap;
 import static org.sonar.db.DatabaseUtils.executeLargeInputsWithoutOutput;
@@ -126,6 +128,24 @@ public class PermissionDao implements Dao {
         mapper(dbSession).groupsCountByProjectIdAndPermission(parameters, resultHandler);
         return null;
       });
+  }
+
+  public List<ComponentDto> selectProjectsByUser(DbSession dbSession, Integer userId, String permission, Paging paging) {
+    Map<String, Object> parameters = new HashMap<>(4);
+    parameters.put("userId", userId);
+    parameters.put("permission", permission);
+    parameters.put("offset", paging.offset());
+    parameters.put("pageSize", paging.pageSize());
+
+    return mapper(dbSession).selectProjectsByUser(parameters);
+  }
+
+  public int countProjectsByUser(DbSession dbSession, Integer userId, String permission) {
+    Map<String, Object> parameters = new HashMap<>(2);
+    parameters.put("userId", userId);
+    parameters.put("permission", permission);
+
+    return mapper(dbSession).countProjectsByUser(parameters);
   }
 
   private static Map<String, Object> groupsParameters(PermissionQuery query, @Nullable Long componentId) {

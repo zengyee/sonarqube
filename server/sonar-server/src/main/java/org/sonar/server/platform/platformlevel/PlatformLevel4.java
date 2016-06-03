@@ -183,6 +183,7 @@ import org.sonar.server.plugins.ws.PluginsWs;
 import org.sonar.server.plugins.ws.UninstallAction;
 import org.sonar.server.plugins.ws.UpdatesAction;
 import org.sonar.server.project.ws.ProjectsWsModule;
+import org.sonar.server.project.ws.SearchMyProjectsDataLoader;
 import org.sonar.server.properties.ProjectSettingsFactory;
 import org.sonar.server.qualitygate.QgateProjectFinder;
 import org.sonar.server.qualitygate.QualityGates;
@@ -528,6 +529,7 @@ public class PlatformLevel4 extends PlatformLevel {
 
       // components
       ProjectsWsModule.class,
+      SearchMyProjectsDataLoader.class,
       ComponentsWsModule.class,
       DefaultComponentFinder.class,
       DefaultRubyComponentService.class,

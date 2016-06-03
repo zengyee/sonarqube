@@ -19,39 +19,33 @@
  */
 package org.sonar.db.version.v60;
 
-import com.google.common.annotations.VisibleForTesting;
-import java.sql.SQLException;
+import org.junit.Before;
+import org.junit.Test;
 import org.sonar.db.Database;
-import org.sonar.db.version.DdlChange;
-import org.sonar.db.version.DropColumnsBuilder;
+import org.sonar.db.dialect.PostgreSql;
 
-/**
- * Drop the following columns from the project_measures table :
- * - rule_id
- * - rule_category_id
- * - tendency
- * - url
- * - measure_date
- * - url
- * - rule_priority
- * - Characteristic_id
- */
-public class RemoveUnusedMeasuresColumns extends DdlChange {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-  public RemoveUnusedMeasuresColumns(Database db) {
-    super(db);
+public class RemoveUnusedMeasuresColumnsTest {
+
+  RemoveUnusedMeasuresColumns underTest;
+  Database database;
+
+  @Before
+  public void setUp() {
+    database = mock(Database.class);
+    underTest = new RemoveUnusedMeasuresColumns(database);
   }
 
-  @Override
-  public void execute(Context context) throws SQLException {
-    context.execute(generateSql());
-  }
-
-  @VisibleForTesting
-  String generateSql() {
-    return new DropColumnsBuilder(getDatabase().getDialect(), "project_measures",
-      "rule_id", "rules_category_id", "tendency", "measure_date", "url", "rule_priority", "characteristic_id")
-      .build();
+  @Test
+  public void generate_sql_on_postgresql() {
+    when(database.getDialect()).thenReturn(new PostgreSql());
+    assertThat(underTest.generateSql())
+      .isEqualTo(
+        "ALTER TABLE project_measures DROP COLUMN rule_id, DROP COLUMN rules_category_id, DROP COLUMN tendency, DROP COLUMN measure_date, DROP COLUMN url, DROP COLUMN rule_priority, DROP COLUMN characteristic_id"
+      );
   }
 
 }

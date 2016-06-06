@@ -187,26 +187,6 @@ class Snapshot < ActiveRecord::Base
     m && m.formatted_value
   end
 
-  def rule_measures(metrics=nil, rule=nil)
-    if metrics
-      metric_ids=[metrics].flatten.map { |metric| metric.id }
-    end
-    if metrics || rule
-      rulemeasures.select do |m|
-        (metric_ids.nil? || metric_ids.include?(m.metric_id)) && (rule.nil? || m.rule_id==rule.id)
-      end
-    else
-      rulemeasures
-    end
-  end
-
-  def rule_measure(metric, rule)
-    rulemeasures.each do |m|
-      return m if m.metric_id==metric.id && m.rule_id==rule.id
-    end
-    nil
-  end
-
   def self.snapshot_by_date(resource_id, date)
     if resource_id && date
       Snapshot.find(:first, :conditions => ['created_at>=? and created_at<? and project_id=?', date.beginning_of_day.to_i*1000, date.end_of_day.to_i*1000, resource_id], :order => 'created_at desc')

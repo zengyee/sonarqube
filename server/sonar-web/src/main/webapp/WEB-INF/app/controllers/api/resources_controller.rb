@@ -280,7 +280,7 @@ class Api::ResourcesController < Api::ApiController
   end
 
   def select_columns_for_measures
-    select_columns='project_measures.id,project_measures.value,project_measures.metric_id,project_measures.snapshot_id,project_measures.rule_id,project_measures.text_value,project_measures.measure_data'
+    select_columns='project_measures.id,project_measures.value,project_measures.metric_id,project_measures.snapshot_id,project_measures.text_value,project_measures.measure_data'
     if params[:includetrends]=='true'
       select_columns+=',project_measures.variation_value_1,project_measures.variation_value_2,project_measures.variation_value_3,project_measures.variation_value_4,project_measures.variation_value_5'
     end
@@ -295,15 +295,8 @@ class Api::ResourcesController < Api::ApiController
 
   def add_rule_filters(measures_conditions, measures_values)
     param_rules = params['rules'] || 'false'
-    if param_rules=='true'
-      measures_conditions << "project_measures.rule_id IS NOT NULL"
-
-    elsif param_rules=='false'
-      measures_conditions << "project_measures.rule_id IS NULL"
-    else
       rule_ids=param_rules.split(',').map do |key_or_id|
         Rule.to_i(key_or_id)
-      end
       measures_conditions << 'project_measures.rule_id IN (:rule_ids)'
       measures_values[:rule_ids]=rule_ids.compact
     end
@@ -415,12 +408,7 @@ class Api::ResourcesController < Api::ApiController
           json_measure[:var5]=measure.variation_value_5.to_f if measure.variation_value_5
           json_measure[:fvar5]=measure.format_numeric_value(measure.variation_value_5.to_f) if measure.variation_value_5
         end
-        if measure.rule_id
-          rule = rules_by_id[measure.rule_id]
-          json_measure[:rule_key] = rule.key if rule
-          json_measure[:rule_name] = rule.name if rule
-        end
-      end
+       end
     end
     json
   end
@@ -494,12 +482,7 @@ class Api::ResourcesController < Api::ApiController
               xml.var5(measure.variation_value_5.to_f) if measure.variation_value_5
               xml.fvar5(measure.format_numeric_value(measure.variation_value_5.to_f)) if measure.variation_value_5
             end
-            if measure.rule_id
-              rule = rules_by_id[measure.rule_id]
-              xml.rule_key(rule.key) if rule
-              xml.rule_name(rule.name) if rule
-            end
-          end
+           end
         end
       end
     end

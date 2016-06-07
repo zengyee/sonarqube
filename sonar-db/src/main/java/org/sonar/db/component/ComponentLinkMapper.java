@@ -25,10 +25,11 @@ public interface ComponentLinkMapper {
 
   List<ComponentLinkDto> selectByComponentUuid(String componentUuid);
 
+  List<ComponentLinkDto> selectByComponentUuids(List<String> componentUuids);
+
   void insert(ComponentLinkDto dto);
 
   void update(ComponentLinkDto dto);
 
   void delete(long id);
-
 }

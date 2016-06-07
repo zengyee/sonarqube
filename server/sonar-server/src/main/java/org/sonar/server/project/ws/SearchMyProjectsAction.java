@@ -19,6 +19,7 @@
  */
 package org.sonar.server.project.ws;
 
+import java.util.List;
 import org.sonar.api.server.ws.Request;
 import org.sonar.api.server.ws.Response;
 import org.sonar.api.server.ws.WebService;
@@ -26,6 +27,7 @@ import org.sonar.api.utils.Paging;
 import org.sonar.db.DbClient;
 import org.sonar.db.DbSession;
 import org.sonar.db.component.ComponentDto;
+import org.sonar.db.component.ComponentLinkDto;
 import org.sonar.server.user.UserSession;
 import org.sonarqube.ws.Common;
 import org.sonarqube.ws.WsProjects.SearchMyProjectsWsResponse;
@@ -49,7 +51,7 @@ public class SearchMyProjectsAction implements ProjectsWsAction {
   public void define(WebService.NewController context) {
     context.createAction("search_my_projects")
       .setDescription("Return list of projects for which the current user has 'Administer' permission.")
-      .setResponseExample(getClass().getResource("projects-example-my.json"))
+      .setResponseExample(getClass().getResource("search_my_projects-example.json"))
       .setSince("6.0")
       .setInternal(true)
       .addPagingParams(100)
@@ -93,6 +95,15 @@ public class SearchMyProjectsAction implements ProjectsWsAction {
       if (project.description() != null) {
         projectBuilder.setDescription(project.description());
       }
+      List<ComponentLinkDto> componentLinkDtos = data.projectLinksFor(project.uuid());
+      for (ComponentLinkDto componentLinkDto : componentLinkDtos) {
+        projectBuilder.addLinksBuilder()
+          .setType(componentLinkDto.getType())
+          .setName(componentLinkDto.getName())
+          .setHref(componentLinkDto.getHref())
+          .build();
+      }
+
       response.addProjects(projectBuilder);
     }
 

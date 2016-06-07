@@ -19,21 +19,29 @@
  */
 package org.sonar.server.project.ws;
 
+import com.google.common.collect.ImmutableListMultimap;
+import com.google.common.collect.ListMultimap;
+import java.util.List;
 import org.sonar.api.utils.Paging;
 import org.sonar.db.component.ComponentDto;
-
-import java.util.List;
+import org.sonar.db.component.ComponentLinkDto;
 
 import static com.google.common.base.Preconditions.checkState;
 import static com.google.common.collect.ImmutableList.copyOf;
 
 class SearchMyProjectsData {
   private final List<ComponentDto> projects;
+  private final ListMultimap<String, ComponentLinkDto> projectLinksByProjectUuid;
   private final Paging paging;
 
   private SearchMyProjectsData(Builder builder) {
     this.projects = copyOf(builder.projects);
     this.paging = builder.paging;
+    ImmutableListMultimap.Builder<String, ComponentLinkDto> projectLinksBuilder = ImmutableListMultimap.builder();
+    for (ComponentLinkDto projectLink : builder.projectLinks) {
+      projectLinksBuilder.put(projectLink.getComponentUuid(), projectLink);
+    }
+    this.projectLinksByProjectUuid = projectLinksBuilder.build();
   }
 
   static Builder newBuilder() {
@@ -44,32 +52,42 @@ class SearchMyProjectsData {
     return projects;
   }
 
+  List<ComponentLinkDto> projectLinksFor(String projectUuid) {
+    return projectLinksByProjectUuid.get(projectUuid);
+  }
+
   Paging paging() {
     return paging;
   }
 
   static class Builder {
     private List<ComponentDto> projects;
+    private List<ComponentLinkDto> projectLinks;
     private Paging paging;
 
     private Builder() {
       // prevents instantiation outside main class
     }
 
-    SearchMyProjectsData build() {
-      checkState(projects != null);
-
-      return new SearchMyProjectsData(this);
-    }
-
-    Builder projects(List<ComponentDto> projects) {
+    Builder setProjects(List<ComponentDto> projects) {
       this.projects = projects;
       return this;
     }
 
-    Builder paging(Paging paging) {
+    public Builder setProjectLinks(List<ComponentLinkDto> projectLinks) {
+      this.projectLinks = projectLinks;
+      return this;
+    }
+
+    Builder setPaging(Paging paging) {
       this.paging = paging;
       return this;
+    }
+
+    SearchMyProjectsData build() {
+      checkState(projects != null);
+
+      return new SearchMyProjectsData(this);
     }
   }
 }

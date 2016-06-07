@@ -19,6 +19,10 @@
  */
 package org.sonar.server.project.ws;
 
+import com.google.common.base.Throwables;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.annotation.Nullable;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,11 +37,15 @@ import org.sonar.db.user.UserDto;
 import org.sonar.db.user.UserRoleDto;
 import org.sonar.server.exceptions.UnauthorizedException;
 import org.sonar.server.tester.UserSessionRule;
+import org.sonar.server.ws.TestRequest;
 import org.sonar.server.ws.WsActionTester;
+import org.sonarqube.ws.MediaTypes;
+import org.sonarqube.ws.WsProjects.SearchMyProjectsWsResponse;
 
-import javax.annotation.Nullable;
-
-import static org.sonar.db.component.ComponentTesting.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.sonar.db.component.ComponentTesting.newDeveloper;
+import static org.sonar.db.component.ComponentTesting.newProjectDto;
+import static org.sonar.db.component.ComponentTesting.newView;
 import static org.sonar.db.user.UserTesting.newUserDto;
 import static org.sonar.test.JsonAssert.assertJson;
 
@@ -71,17 +79,21 @@ public class SearchMyProjectsActionTest {
   }
 
   @Test
+  public void search_json_example() {
+    // TODO
+  }
+
+  @Test
   public void should_return_my_projects() {
     ComponentDto jdk7 = insertJdk7();
     insertClang();
 
     insertUserRole(UserRole.ADMIN, userDto.getId(), jdk7.getId());
 
-    commit();
+    SearchMyProjectsWsResponse result = call(ws.newRequest());
 
-    String result = ws.newRequest().execute().getInput();
-    assertJson(result)
-      .isSimilarTo(getClass().getResource("SearchMyProjectsActionTest/search.json"));
+    assertThat(result.getProjectsCount()).isEqualTo(1);
+    assertThat(result.getProjects(0).getName()).isEqualTo("JDK 7");
   }
 
   @Test
@@ -141,8 +153,8 @@ public class SearchMyProjectsActionTest {
     return insertComponent(newProjectDto("project-uuid-1")
       .setName("JDK 7")
       .setKey("net.java.openjdk:jdk7")
-      .setUuid("0bd7b1e7-91d6-439e-a607-4a3a9aad3c6a"))
-      .setDescription("JDK");
+      .setUuid("0bd7b1e7-91d6-439e-a607-4a3a9aad3c6a")
+      .setDescription("JDK"));
   }
 
   private ComponentDto insertView() {
@@ -172,9 +184,22 @@ public class SearchMyProjectsActionTest {
       .setRole(permission)
       .setUserId(userId)
       .setResourceId(resourceId));
+    commit();
   }
 
   private void commit() {
     dbSession.commit();
+  }
+
+  private SearchMyProjectsWsResponse call(TestRequest request) {
+    InputStream responseStream = request
+      .setMediaType(MediaTypes.PROTOBUF)
+      .execute().getInputStream();
+
+    try {
+      return SearchMyProjectsWsResponse.parseFrom(responseStream);
+    } catch (IOException e) {
+      throw Throwables.propagate(e);
+    }
   }
 }

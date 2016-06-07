@@ -147,7 +147,7 @@
   <select id="selectProjectsByUser" parameterType="map" resultType="org.sonar.db.component.ComponentDto">
     SELECT p.uuid, p.kee, p.name, p.description
     FROM projects p
-    JOIN user_roles ur ON ur.resource_id=p.id
+    INNER JOIN user_roles ur ON ur.resource_id=p.id
     <where>
       ur.user_id=#{userId}
       AND ur.role=#{permission}

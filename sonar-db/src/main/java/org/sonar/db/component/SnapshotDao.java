@@ -63,6 +63,10 @@ public class SnapshotDao implements Dao {
     return mapper(session).selectLastSnapshot(componentId);
   }
 
+  public List<SnapshotDto> selectLastSnapshotByComponentIds(DbSession dbSession, List<Long> componentIds) {
+    return mapper(dbSession).selectLastSnapshotByComponentIds(componentIds);
+  }
+
   public boolean hasLastSnapshotByComponentUuid(DbSession session, String componentUUid) {
     return mapper(session).countLastSnapshotByComponentUuid(componentUUid) > 0;
   }

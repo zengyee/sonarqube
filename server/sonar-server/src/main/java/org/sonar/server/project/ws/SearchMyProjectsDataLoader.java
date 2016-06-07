@@ -19,14 +19,15 @@
  */
 package org.sonar.server.project.ws;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.sonar.api.utils.Paging;
 import org.sonar.api.web.UserRole;
 import org.sonar.db.DbClient;
 import org.sonar.db.DbSession;
 import org.sonar.db.component.ComponentDto;
+import org.sonar.db.component.ComponentLinkDto;
 import org.sonarqube.ws.client.project.SearchMyProjectsWsRequest;
-
-import java.util.List;
 
 import static org.sonar.api.utils.Paging.forPageIndex;
 import static org.sonar.server.project.ws.SearchMyProjectsData.newBuilder;
@@ -44,9 +45,11 @@ public class SearchMyProjectsDataLoader {
       SearchMyProjectsData.Builder data = newBuilder();
       int projectsCount = countProjects(dbSession, request);
       List<ComponentDto> projects = searchProjects(dbSession, request, paging(request, projectsCount));
+      List<ComponentLinkDto> projectLinks = dbClient.componentLinkDao().selectByComponentUuids(dbSession, projects.stream().map(ComponentDto::uuid).collect(Collectors.toList()));
 
-      data.projects(projects)
-        .paging(paging(request, projectsCount));
+      data.setProjects(projects)
+        .setProjectLinks(projectLinks)
+        .setPaging(paging(request, projectsCount));
 
       return data.build();
     } finally {

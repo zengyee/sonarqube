@@ -36,6 +36,8 @@ public interface SnapshotMapper {
   @CheckForNull
   SnapshotDto selectLastSnapshot(Long resourceId);
 
+  List<SnapshotDto> selectLastSnapshotByComponentIds(List<Long> componentIds);
+
   int countLastSnapshotByComponentUuid(String componentUuid);
 
   @CheckForNull

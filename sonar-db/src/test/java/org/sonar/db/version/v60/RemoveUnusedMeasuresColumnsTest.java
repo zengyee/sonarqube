@@ -44,7 +44,7 @@ public class RemoveUnusedMeasuresColumnsTest {
     when(database.getDialect()).thenReturn(new PostgreSql());
     assertThat(underTest.generateSql())
       .isEqualTo(
-        "ALTER TABLE project_measures DROP COLUMN rule_id, DROP COLUMN rules_category_id, DROP COLUMN tendency, DROP COLUMN measure_date, DROP COLUMN url, DROP COLUMN rule_priority, DROP COLUMN characteristic_id"
+        "ALTER TABLE project_measures DROP COLUMN rules_category_id, DROP COLUMN tendency, DROP COLUMN measure_date, DROP COLUMN url, DROP COLUMN rule_priority, DROP COLUMN characteristic_id"
       );
   }
 

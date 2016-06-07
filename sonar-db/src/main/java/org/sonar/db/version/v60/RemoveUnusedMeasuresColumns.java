@@ -20,10 +20,11 @@
 package org.sonar.db.version.v60;
 
 import com.google.common.annotations.VisibleForTesting;
-import java.sql.SQLException;
 import org.sonar.db.Database;
 import org.sonar.db.version.DdlChange;
 import org.sonar.db.version.DropColumnsBuilder;
+
+import java.sql.SQLException;
 
 /**
  * Drop the following columns from the project_measures table :

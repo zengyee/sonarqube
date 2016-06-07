@@ -27,7 +27,6 @@ import org.sonar.db.version.DropColumnsBuilder;
 
 /**
  * Drop the following columns from the project_measures table :
- * - rule_id
  * - rule_category_id
  * - tendency
  * - url
@@ -50,7 +49,7 @@ public class RemoveUnusedMeasuresColumns extends DdlChange {
   @VisibleForTesting
   String generateSql() {
     return new DropColumnsBuilder(getDatabase().getDialect(), "project_measures",
-      "rule_id", "rules_category_id", "tendency", "measure_date", "url", "rule_priority", "characteristic_id")
+      "rules_category_id", "tendency", "measure_date", "url", "rule_priority", "characteristic_id")
       .build();
   }
 

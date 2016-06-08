@@ -19,8 +19,6 @@
  */
 package org.sonar.server.computation.step;
 
-import java.util.List;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -32,31 +30,18 @@ import org.sonar.db.DbTester;
 import org.sonar.db.component.ComponentDto;
 import org.sonar.db.rule.RuleDto;
 import org.sonar.server.computation.batch.TreeRootHolderRule;
-import org.sonar.server.computation.component.Component;
-import org.sonar.server.computation.component.Developer;
-import org.sonar.server.computation.component.DumbDeveloper;
-import org.sonar.server.computation.component.MutableDbIdsRepositoryRule;
-import org.sonar.server.computation.component.ReportComponent;
-import org.sonar.server.computation.component.ViewsComponent;
+import org.sonar.server.computation.component.*;
 import org.sonar.server.computation.measure.MeasureRepositoryRule;
 import org.sonar.server.computation.measure.MeasureToMeasureDto;
 import org.sonar.server.computation.metric.MetricRepositoryRule;
 import org.sonar.server.computation.period.Period;
 
+import java.util.List;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.sonar.api.measures.CoreMetrics.CLASS_COMPLEXITY_DISTRIBUTION;
-import static org.sonar.api.measures.CoreMetrics.CLASS_COMPLEXITY_DISTRIBUTION_KEY;
-import static org.sonar.api.measures.CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION;
-import static org.sonar.api.measures.CoreMetrics.FILE_COMPLEXITY_DISTRIBUTION_KEY;
-import static org.sonar.api.measures.CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION;
-import static org.sonar.api.measures.CoreMetrics.FUNCTION_COMPLEXITY_DISTRIBUTION_KEY;
-import static org.sonar.server.computation.component.Component.Type.DIRECTORY;
-import static org.sonar.server.computation.component.Component.Type.FILE;
-import static org.sonar.server.computation.component.Component.Type.MODULE;
-import static org.sonar.server.computation.component.Component.Type.PROJECT;
-import static org.sonar.server.computation.component.Component.Type.PROJECT_VIEW;
-import static org.sonar.server.computation.component.Component.Type.SUBVIEW;
-import static org.sonar.server.computation.component.Component.Type.VIEW;
+import static org.sonar.api.measures.CoreMetrics.*;
+import static org.sonar.server.computation.component.Component.Type.*;
 import static org.sonar.server.computation.measure.Measure.newMeasureBuilder;
 import static org.sonar.server.computation.measure.MeasureVariations.newMeasureVariationsBuilder;
 
@@ -404,7 +389,7 @@ public class PersistMeasuresStepTest extends BaseStepTest {
   private List<Map<String, Object>> selectSnapshots() {
     return dbTester
       .select(
-      "SELECT snapshot_id as \"snapshotId\", project_id as \"componentId\", metric_id as \"metricId\", person_id as \"developerId\", "
+      "SELECT snapshot_id as \"snapshotId\", project_id as \"componentId\", metric_id as \"metricId\", rule_id as \"ruleId\",  person_id as \"developerId\", "
         +
         "value as \"value\", text_value as \"textValue\", " +
         "variation_value_1 as \"variation_value_1\", " +

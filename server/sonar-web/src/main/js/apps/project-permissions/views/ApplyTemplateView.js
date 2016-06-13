@@ -18,9 +18,9 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import _ from 'underscore';
-import ModalForm from '../../components/common/modal-form';
-import { applyTemplateToProject, bulkApplyTemplateToProject } from '../../api/permissions';
-import Template from './templates/project-permissions-apply-template.hbs';
+import ModalForm from '../../../components/common/modal-form';
+import { applyTemplateToProject, bulkApplyTemplateToProject } from '../../../api/permissions';
+import Template from '../templates/project-permissions-apply-template.hbs';
 
 export default ModalForm.extend({
   template: Template,

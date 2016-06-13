@@ -23,7 +23,7 @@ import Header from './Header';
 import List from './List';
 import { TooltipsContainer } from '../../../components/mixins/tooltips-mixin';
 import { getPermissionTemplates } from '../../../api/permissions';
-import { sortPermissions, mergePermissionsToTemplates, mergeDefaultsToTemplates } from '../utils';
+import { sortPermissions, mergePermissions, mergeDefaultsToTemplates } from '../utils';
 import { translate } from '../../../helpers/l10n';
 import '../styles.css';
 
@@ -56,7 +56,7 @@ export default class App extends React.Component {
       if (this.mounted) {
         const permissions = sortPermissions(r.permissions);
         const permissionTemplates = mergeDefaultsToTemplates(
-            mergePermissionsToTemplates(r.permissionTemplates, permissions),
+            mergePermissions(r.permissionTemplates, permissions),
             r.defaultTemplates
         );
         this.setState({

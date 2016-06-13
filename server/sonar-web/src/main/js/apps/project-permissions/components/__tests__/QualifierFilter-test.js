@@ -17,33 +17,27 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import classNames from 'classnames';
+import { expect } from 'chai';
+import { shallow } from 'enzyme';
+import sinon from 'sinon';
 import React from 'react';
+import QualifierFilter from '../QualifierFilter';
+import RadioToggle from '../../../../components/controls/RadioToggle';
 
-export default React.createClass({
-  propTypes: {
-    count: React.PropTypes.number.isRequired,
-    total: React.PropTypes.number.isRequired,
-    loadMore: React.PropTypes.func.isRequired
-  },
+const ROOT_QUALIFIERS = ['TRK', 'VW'];
 
-  handleLoadMore (e) {
-    e.preventDefault();
-    this.props.loadMore();
-  },
-
-  render() {
-    if (this.props.componentId) {
-      return null;
-    }
-    const hasMore = this.props.total > this.props.count;
-    const loadMoreLink = <a onClick={this.handleLoadMore} className="spacer-left" href="#">show more</a>;
-    const className = classNames('spacer-top note text-center', { 'new-loading': !this.props.ready });
-    return (
-        <footer className={className}>
-          {this.props.count}/{this.props.total} shown
-          {hasMore ? loadMoreLink : null}
-        </footer>
-    );
-  }
+describe('Project Permissions :: QualifierFilter', () => {
+  it('should render RadioToggle', () => {
+    const onFilter = sinon.stub.throws();
+    const output = shallow(
+        <QualifierFilter
+            rootQualifiers={ROOT_QUALIFIERS}
+            filter="TRK"
+            onFilter={onFilter}/>
+    ).find(RadioToggle);
+    expect(output).to.have.length(1);
+    expect(output.prop('onCheck')).to.equal(onFilter);
+    expect(output.prop('value')).to.equal('TRK');
+    expect(output.prop('options')).to.have.length(3);
+  });
 });

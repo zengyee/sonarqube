@@ -87,7 +87,7 @@ export default Marionette.LayoutView.extend({
   },
 
   events: {
-    'submit': 'onSubmit',
+    'submit': 'handleSubmit',
     'keydown .js-search-input': 'onKeyDown',
     'keyup .js-search-input': 'onKeyUp'
   },

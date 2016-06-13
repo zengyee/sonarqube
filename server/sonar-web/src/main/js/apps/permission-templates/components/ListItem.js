@@ -80,8 +80,7 @@ export default class ListItem extends React.Component {
     ));
 
     return (
-        <tr
-            data-id={this.props.permissionTemplate.id}
+        <tr data-id={this.props.permissionTemplate.id}
             data-name={this.props.permissionTemplate.name}>
           <NameCell
               permissionTemplate={this.props.permissionTemplate}

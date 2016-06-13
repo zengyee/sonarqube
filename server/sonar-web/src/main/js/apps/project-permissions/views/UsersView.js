@@ -18,40 +18,38 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 import _ from 'underscore';
-import Modal from '../../components/common/modals';
-import '../../components/SelectList';
-import Template from './templates/project-permissions-groups.hbs';
-
-function getSearchUrl (permission, project) {
-  return `${window.baseUrl}/api/permissions/groups?ps=100&permission=${permission}&projectId=${project}`;
-}
+import Modal from '../../../components/common/modals';
+import '../../../components/SelectList';
+import Template from '../templates/project-permissions-users.hbs';
 
 export default Modal.extend({
   template: Template,
 
   onRender () {
     Modal.prototype.onRender.apply(this, arguments);
+    const searchUrl = window.baseUrl + '/api/permissions/users?ps=100&permission=' + this.options.permission +
+        '&projectId=' + this.options.project;
     new window.SelectList({
-      el: this.$('#project-permissions-groups'),
+      searchUrl,
+      el: this.$('#project-permissions-users'),
       width: '100%',
       readOnly: false,
       focusSearch: false,
       format (item) {
-        return item.name;
+        return `${item.name}<br><span class="note">${item.login}</span>`;
       },
       queryParam: 'q',
-      searchUrl: getSearchUrl(this.options.permission, this.options.project),
-      selectUrl: window.baseUrl + '/api/permissions/add_group',
-      deselectUrl: window.baseUrl + '/api/permissions/remove_group',
+      selectUrl: window.baseUrl + '/api/permissions/add_user',
+      deselectUrl: window.baseUrl + '/api/permissions/remove_user',
       extra: {
         permission: this.options.permission,
         projectId: this.options.project
       },
-      selectParameter: 'groupName',
-      selectParameterValue: 'name',
+      selectParameter: 'login',
+      selectParameterValue: 'login',
       parse (r) {
         this.more = false;
-        return r.groups;
+        return r.users;
       }
     });
   },

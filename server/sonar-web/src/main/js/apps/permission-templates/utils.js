@@ -32,18 +32,25 @@ export function sortPermissions (permissions) {
 
 /**
  * Populate permissions' details in the list of permission templates
- * @param {Array} permissionTemplates
+ * @param {Array} target
  * @param {Array} basePermissions
  * @returns {Array}
  */
-export function mergePermissionsToTemplates (permissionTemplates, basePermissions) {
-  return permissionTemplates.map(permissionTemplate => {
+export function mergePermissions (target, basePermissions) {
+  return target.map(permissionTemplate => {
 
     // it's important to keep the order of the permission template's permissions
     // the same as the order of base permissions
     const permissions = basePermissions.map(basePermission => {
-      const projectPermission = permissionTemplate.permissions.find(p => p.key === basePermission.key);
-      return { usersCount: 0, groupsCount: 0, ...basePermission, ...projectPermission };
+      const finding = permissionTemplate.permissions
+          .find(p => p.key === basePermission.key);
+
+      return {
+        usersCount: 0,
+        groupsCount: 0,
+        ...basePermission,
+        ...finding
+      };
     });
 
     return { ...permissionTemplate, permissions };

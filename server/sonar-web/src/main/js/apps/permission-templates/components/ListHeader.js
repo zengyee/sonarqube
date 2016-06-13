@@ -21,27 +21,33 @@ import React from 'react';
 
 export default class ListHeader extends React.Component {
   static propTypes = {
-    permissions: React.PropTypes.array.isRequired
+    permissions: React.PropTypes.array.isRequired,
+    displayFirstColumn: React.PropTypes.bool
+  };
+
+  static defaultProps = {
+    displayFirstColumn: true
   };
 
   render () {
     const cells = this.props.permissions.map(p => (
         <th key={p.key} className="permission-column">
           {p.name}
-          <i
-              className="icon-help little-spacer-left"
-              title={p.description}
-              data-toggle="tooltip"/>
+          <i className="icon-help little-spacer-left"
+             title={p.description}
+             data-toggle="tooltip"/>
         </th>
     ));
 
     return (
         <thead>
-        <tr>
-          <th>&nbsp;</th>
-          {cells}
-          <th className="actions-column">&nbsp;</th>
-        </tr>
+          <tr>
+            {this.props.displayFirstColumn && (
+                <th>&nbsp;</th>
+            )}
+            {cells}
+            <th className="actions-column">&nbsp;</th>
+          </tr>
         </thead>
     );
   }

@@ -73,7 +73,7 @@ export default class PermissionCell extends React.Component {
                   <a
                       onClick={this.handleShowGroups.bind(this)}
                       className="icon-bullet-list"
-                      title="Update Users"
+                      title="Update Groups"
                       data-toggle="tooltip"
                       href="#"/>
                 </td>

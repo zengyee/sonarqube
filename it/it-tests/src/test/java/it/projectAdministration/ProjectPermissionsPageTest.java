@@ -32,7 +32,7 @@ import util.selenium.SeleneseTest;
 import static util.ItUtils.projectDir;
 
 @Category(QaOnly.class)
-public class ProjectPermissionsTest {
+public class ProjectPermissionsPageTest {
 
   @ClassRule
   public static Orchestrator orchestrator = Category1Suite.ORCHESTRATOR;

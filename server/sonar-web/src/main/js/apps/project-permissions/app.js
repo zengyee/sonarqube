@@ -17,20 +17,15 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import $ from 'jquery';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Main from './main';
-
-function requestPermissionTemplates () {
-  return $.get(window.baseUrl + '/api/permissions/search_templates');
-}
+import App from './components/App';
 
 window.sonarqube.appStarted.then(options => {
-  requestPermissionTemplates().done(r => {
-    const el = document.querySelector(options.el);
-    ReactDOM.render(<Main permissionTemplates={r.permissionTemplates}
-                          componentId={window.sonarqube.componentId}
-                          rootQualifiers={options.rootQualifiers}/>, el);
-  });
+  const el = document.querySelector(options.el);
+  ReactDOM.render((
+      <App
+          component={options.component}
+          rootQualifiers={options.rootQualifiers}/>
+  ), el);
 });

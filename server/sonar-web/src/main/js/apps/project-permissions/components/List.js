@@ -17,36 +17,37 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-import classNames from 'classnames';
 import React from 'react';
+import ListHeader from '../../permission-templates/components/ListHeader';
+import ListItem from './ListItem';
 
-import PermissionsHeader from './permissions-header';
-import Project from './project';
-
-export default React.createClass({
-  propTypes: {
+export default class List extends React.Component {
+  static propTypes = {
+    singleProject: React.PropTypes.bool.isRequired,
     projects: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
     permissions: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
-    permissionTemplates: React.PropTypes.arrayOf(React.PropTypes.object).isRequired,
+    permissionTemplates: React.PropTypes.arrayOf(React.PropTypes.object),
     refresh: React.PropTypes.func.isRequired
-  },
+  };
 
-  render() {
-    const projects = this.props.projects.map(p => {
-      return <Project
-          key={p.id}
-          project={p}
-          permissionTemplates={this.props.permissionTemplates}
-          refresh={this.props.refresh}/>;
-    });
-    const className = classNames(
-        'data zebra permissions-table',
-        { 'new-loading': !this.props.ready });
+  render () {
+    const projects = this.props.projects.map(p => (
+        <ListItem
+            key={p.id}
+            project={p}
+            permissionTemplates={this.props.permissionTemplates}
+            displayFirstColumn={!this.props.singleProject}
+            refresh={this.props.refresh}/>
+    ));
+
     return (
-        <table id="projects" className={className}>
-          <PermissionsHeader permissions={this.props.permissions}/>
+        <table id="projects"
+               className="data zebra permissions-table">
+          <ListHeader
+              permissions={this.props.permissions}
+              displayFirstColumn={!this.props.singleProject}/>
           <tbody>{projects}</tbody>
         </table>
     );
   }
-});
+}

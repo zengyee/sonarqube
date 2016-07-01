@@ -224,11 +224,7 @@ public class ProjectDefinition {
   }
 
   public String getName() {
-    String name = properties.get(CoreProperties.PROJECT_NAME_PROPERTY);
-    if (StringUtils.isBlank(name)) {
-      name = "Unnamed - " + getKey();
-    }
-    return name;
+    return properties.get(CoreProperties.PROJECT_NAME_PROPERTY);
   }
 
   public String getDescription() {

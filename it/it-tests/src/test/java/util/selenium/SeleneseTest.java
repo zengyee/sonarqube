@@ -60,7 +60,7 @@ public class SeleneseTest {
   public void runOn(Orchestrator orchestrator) {
     this.variables = new HashMap<>();
     this.baseUrl = orchestrator.getServer().getUrl();
-    this.driver = Browser.FIREFOX.getDriverForThread();
+    this.driver = Browser.PHANTOMJS.getDriverForThread();
 
     driver.manage().deleteAllCookies();
     driver.manage().window().setSize(new Dimension(1280,1024));

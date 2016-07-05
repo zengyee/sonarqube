@@ -8,66 +8,72 @@
 <table cellpadding="1" cellspacing="1" border="1">
     <tbody>
     <tr>
-	<td>open</td>
-	<td>/sessions/new</td>
-	<td></td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>login</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>password</td>
-	<td>admin</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>commit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>open</td>
-	<td>/dashboards/index?resource=sample</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>dashboards</td>
-	<td>glob:*Custom*</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=unfollow-Custom</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>shared-dashboards</td>
-	<td>glob:*Custom*</td>
-</tr>
-<tr>
-	<td>assertNotText</td>
-	<td>dashboards</td>
-	<td>glob:*Custom*</td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>id=follow-Custom</td>
-	<td></td>
-</tr>
-<tr>
-	<td>assertNotText</td>
-	<td>shared-dashboards</td>
-	<td>glob:*Custom*</td>
-</tr>
-<tr>
-	<td>waitForText</td>
-	<td>dashboards</td>
-	<td>glob:*Custom*</td>
-</tr>
-</tbody>
+        <td>open</td>
+        <td>/sessions/new</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>login</td>
+        <td>admin</td>
+    </tr>
+    <tr>
+        <td>type</td>
+        <td>password</td>
+        <td>admin</td>
+    </tr>
+    <tr>
+        <td>clickAndWait</td>
+        <td>name=commit</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>waitForElementPresent</td>
+        <td>css=.js-user-authenticated</td>
+        <td></td>
+    </tr>
+
+    <tr>
+        <td>open</td>
+        <td>/dashboards/index?resource=sample</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>waitForText</td>
+        <td>dashboards</td>
+        <td>glob:*Custom*</td>
+    </tr>
+    <tr>
+        <td>clickAndWait</td>
+        <td>id=unfollow-Custom</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>waitForText</td>
+        <td>shared-dashboards</td>
+        <td>glob:*Custom*</td>
+    </tr>
+    <tr>
+        <td>assertNotText</td>
+        <td>dashboards</td>
+        <td>glob:*Custom*</td>
+    </tr>
+    <tr>
+        <td>clickAndWait</td>
+        <td>id=follow-Custom</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td>assertNotText</td>
+        <td>shared-dashboards</td>
+        <td>glob:*Custom*</td>
+    </tr>
+    <tr>
+        <td>waitForText</td>
+        <td>dashboards</td>
+        <td>glob:*Custom*</td>
+    </tr>
+    </tbody>
 </table>
 </body>
 </html>

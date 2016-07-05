@@ -27,6 +27,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import util.QaOnly;
+import util.selenium.SeleneseTest;
 
 import static util.ItUtils.runProjectAnalysis;
 
@@ -138,7 +139,7 @@ public class DashboardTest {
 
   private void seleniumSuite(String suiteName, String... tests) {
     Selenese selenese = Selenese.builder().setHtmlTestsInClasspath(suiteName, tests).build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   private static void addUserPermission(String login, String projectKey, String permission) {

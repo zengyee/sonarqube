@@ -148,14 +148,14 @@ public class DifferentialPeriodsTest {
     runProjectAnalysis(orchestrator, "shared/xoo-sample");
 
     // Use old way to execute Selenium because 'assertSelectOptions' action is not supported by SeleneseTest
-    orchestrator.executeSelenese(Selenese.builder().setHtmlTestsInClasspath("not-display-periods-selection-dropdown-on-first-analysis",
+    new SeleneseTest(Selenese.builder().setHtmlTestsInClasspath("not-display-periods-selection-dropdown-on-first-analysis",
       "/measureHistory/DifferentialPeriodsTest/not-display-periods-selection-dropdown-on-dashboard.html"
-      ).build());
+      ).build()).runOn(orchestrator);
 
     runProjectAnalysis(orchestrator, "shared/xoo-sample");
-    orchestrator.executeSelenese(Selenese.builder().setHtmlTestsInClasspath("display-periods-selection-dropdown-after-first-analysis",
+    new SeleneseTest(Selenese.builder().setHtmlTestsInClasspath("display-periods-selection-dropdown-after-first-analysis",
       "/measureHistory/DifferentialPeriodsTest/display-periods-selection-dropdown-on-dashboard.html"
-      ).build());
+      ).build()).runOn(orchestrator);
   }
 
   /**

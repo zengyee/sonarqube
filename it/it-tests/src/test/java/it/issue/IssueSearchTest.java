@@ -45,6 +45,7 @@ import org.sonarqube.ws.Common;
 import org.sonarqube.ws.MediaTypes;
 import org.sonarqube.ws.client.GetRequest;
 import org.sonarqube.ws.client.WsResponse;
+import util.selenium.SeleneseTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.fail;
@@ -282,9 +283,10 @@ public class IssueSearchTest extends AbstractIssueTest {
   public void redirect_to_search_url_after_wrong_login() {
     // Force user authentication to check login on the issues search page
     setServerProperty(ORCHESTRATOR, "sonar.forceAuthentication", "true");
-    ORCHESTRATOR.executeSelenese(Selenese.builder().setHtmlTestsInClasspath("redirect_to_search_url_after_wrong_login",
+    Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("redirect_to_search_url_after_wrong_login",
       "/issue/IssueSearchTest/redirect_to_search_url_after_wrong_login.html" // SONAR-5659
-    ).build());
+    ).build();
+    new SeleneseTest(selenese).runOn(ORCHESTRATOR);
   }
 
   @Test

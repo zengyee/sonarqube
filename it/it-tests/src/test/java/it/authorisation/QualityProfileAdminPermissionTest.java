@@ -30,6 +30,7 @@ import org.junit.experimental.categories.Category;
 import org.sonarqube.ws.client.permission.AddUserWsRequest;
 import org.sonarqube.ws.client.permission.PermissionsService;
 import util.QaOnly;
+import util.selenium.SeleneseTest;
 import util.user.UserRule;
 
 import static util.ItUtils.newAdminWsClient;
@@ -67,12 +68,13 @@ public class QualityProfileAdminPermissionTest {
     userRule.createUser("profileadm", "papwd");
     permissionsWsClient.addUser(new AddUserWsRequest().setLogin("profileadm").setPermission("profileadmin"));
 
-    orchestrator.executeSelenese(Selenese.builder().setHtmlTestsInClasspath("administrate-profiles",
+    Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("administrate-profiles",
       // Verify normal user is not allowed to do any modification
       "/authorisation/QualityProfileAdminPermissionTest/normal-user.html",
       // Verify profile admin is allowed to do modifications
       "/authorisation/QualityProfileAdminPermissionTest/profile-admin.html"
-    ).build());
+    ).build();
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
 }

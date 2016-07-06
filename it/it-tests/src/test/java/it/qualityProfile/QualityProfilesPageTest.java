@@ -86,7 +86,7 @@ public class QualityProfilesPageTest {
   public void testNotFound() {
     Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("test_not_found",
       "/qualityProfile/QualityProfilesPageTest/not_found.html").build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   @Test

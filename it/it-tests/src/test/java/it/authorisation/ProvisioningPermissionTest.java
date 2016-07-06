@@ -39,6 +39,7 @@ import org.sonarqube.ws.client.permission.PermissionsService;
 import org.sonarqube.ws.client.permission.RemoveGroupWsRequest;
 import org.sonarqube.ws.client.permission.RemoveUserWsRequest;
 import util.QaOnly;
+import util.selenium.SeleneseTest;
 import util.user.UserRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -102,7 +103,7 @@ public class ProvisioningPermissionTest {
     Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("should-not-be-able-to-provision-project",
       "/authorisation/ProvisioningPermissionTest/should-not-be-able-to-provision-project.html"
       ).build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   /**
@@ -114,7 +115,7 @@ public class ProvisioningPermissionTest {
     Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("should-be-able-to-provision-project",
       "/authorisation/ProvisioningPermissionTest/should-be-able-to-provision-project.html"
       ).build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   /**

@@ -56,12 +56,11 @@ public class EventTest {
   public void configuration_of_event() {
     executeAnalysis();
 
-    orchestrator.executeSelenese(
-      Selenese.builder().setHtmlTestsInClasspath("events",
-        "/projectEvent/EventTest/create_event_with_special_character.html",
-        "/projectEvent/EventTest/no_events_widget_on_dir.html"
-        ).build()
-      );
+    Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("events",
+      "/projectEvent/EventTest/create_event_with_special_character.html",
+      "/projectEvent/EventTest/no_events_widget_on_dir.html"
+    ).build();
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   @Test
@@ -82,11 +81,10 @@ public class EventTest {
     // Second build, today
     executeAnalysis();
 
-    orchestrator.executeSelenese(
-      Selenese.builder().setHtmlTestsInClasspath("event-widget",
-        "/projectEvent/EventTest/show_events_using_filters.html"
-        ).build()
-      );
+    Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("event-widget",
+      "/projectEvent/EventTest/show_events_using_filters.html"
+    ).build();
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   /**

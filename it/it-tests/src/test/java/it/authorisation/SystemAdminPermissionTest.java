@@ -28,6 +28,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.sonarqube.ws.client.permission.AddUserWsRequest;
 import org.sonarqube.ws.client.permission.PermissionsService;
+import util.selenium.SeleneseTest;
 import util.user.UserRule;
 
 import static util.ItUtils.newAdminWsClient;
@@ -96,7 +97,7 @@ public class SystemAdminPermissionTest {
 
   private void seleniumSuite(String suiteName, String... tests) {
     Selenese selenese = Selenese.builder().setHtmlTestsInClasspath(suiteName, tests).build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
 }

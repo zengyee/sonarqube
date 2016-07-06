@@ -92,7 +92,7 @@ public class UiExtensionsTest {
       "/uiExtension/UiExtensionsTest/ruby-rails-app.html",
       "/uiExtension/UiExtensionsTest/ruby-rails-app-advanced.html"
       ).build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   /**

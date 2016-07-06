@@ -54,7 +54,7 @@ public class ProjectOverviewTest {
   public void should_display_a_nice_error_when_requesting_unknown_project() {
     Selenese selenese = Selenese.builder().setHtmlTestsInClasspath("should_display_a_nice_error_when_requesting_unknown_project",
       "/measure/ProjectOverviewTest/should-display-nice-error-on-unknown-project.html").build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   private void executeBuild(String projectLocation, String projectKey, String projectName) {

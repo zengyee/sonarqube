@@ -31,6 +31,7 @@ import org.junit.experimental.categories.Category;
 import org.sonarqube.ws.client.permission.AddUserWsRequest;
 import org.sonarqube.ws.client.permission.PermissionsService;
 import util.QaOnly;
+import util.selenium.SeleneseTest;
 import util.user.UserRule;
 
 import static util.ItUtils.newAdminWsClient;
@@ -86,7 +87,7 @@ public class DashboardSharingPermissionTest {
       "/authorisation/DashboardSharingPermissionTest/global-dashboard-sharing-allowed.html",
       "/authorisation/DashboardSharingPermissionTest/global-dashboard-sharing-denied.html")
       .build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 
   /**
@@ -100,6 +101,6 @@ public class DashboardSharingPermissionTest {
       "/authorisation/DashboardSharingPermissionTest/project-dashboard-sharing-allowed.html",
       "/authorisation/DashboardSharingPermissionTest/project-dashboard-sharing-denied.html")
       .build();
-    orchestrator.executeSelenese(selenese);
+    new SeleneseTest(selenese).runOn(orchestrator);
   }
 }

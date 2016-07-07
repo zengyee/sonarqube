@@ -42,7 +42,7 @@
 
   <sql id="userColumns">
     <!-- lower(u.name) and u.id are present to order by with select distinct -->
-    u.login as login, u.name as name, lower(u.name), u.id
+    u.login as login, u.name as name, u.id
   </sql>
 
   <select id="selectLoginsByPermissionQuery" parameterType="map" resultType="string">
@@ -50,8 +50,8 @@
     from (
       select distinct <include refid="userColumns" />
       <include refid="usersByQuery"/>
-      order by lower(u.name), u.name, u.id
     ) u
+    order by lower(u.name), u.name, u.id
   </select>
 
   <select id="countUsersByPermissionQuery" parameterType="map" resultType="int">

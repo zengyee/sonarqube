@@ -42,11 +42,13 @@ import org.sonarqube.ws.client.permission.UsersWsRequest;
 
 import static org.sonar.db.permission.PermissionQuery.DEFAULT_PAGE_SIZE;
 import static org.sonar.db.permission.PermissionQuery.RESULTS_MAX_SIZE;
+import static org.sonar.db.permission.PermissionQuery.SEARCH_QUERY_MIN_LENGTH;
 import static org.sonar.server.permission.PermissionPrivilegeChecker.checkProjectAdminUserByComponentDto;
 import static org.sonar.server.permission.ws.PermissionRequestValidator.validatePermission;
 import static org.sonar.server.permission.ws.PermissionsWsParametersBuilder.createPermissionParameter;
 import static org.sonar.server.permission.ws.PermissionsWsParametersBuilder.createProjectParameters;
 import static org.sonar.server.permission.ws.WsProjectRef.newOptionalWsProjectRef;
+import static org.sonar.server.ws.WsUtils.checkRequest;
 import static org.sonar.server.ws.WsUtils.writeProtobuf;
 import static org.sonarqube.ws.client.permission.PermissionsWsParameters.PARAM_PERMISSION;
 import static org.sonarqube.ws.client.permission.PermissionsWsParameters.PARAM_PROJECT_ID;
@@ -80,7 +82,7 @@ public class UsersAction implements PermissionsWsAction {
       .setHandler(this);
 
     action.createParam(Param.TEXT_QUERY)
-      .setDescription("Limit search to user names that contain the supplied string. Must have at least %d characters.", PermissionQuery.SEARCH_QUERY_MIN_LENGTH)
+      .setDescription("Limit search to user names that contain the supplied string. Must have at least %d characters.", SEARCH_QUERY_MIN_LENGTH)
       .setExampleValue("eri");
     createPermissionParameter(action).setRequired(false);
     createProjectParameters(action);
@@ -111,13 +113,18 @@ public class UsersAction implements PermissionsWsAction {
   }
 
   private static UsersWsRequest toUsersWsRequest(Request request) {
-    return new UsersWsRequest()
+    UsersWsRequest usersRequest = new UsersWsRequest()
       .setPermission(request.param(PARAM_PERMISSION))
       .setProjectId(request.param(PARAM_PROJECT_ID))
       .setProjectKey(request.param(PARAM_PROJECT_KEY))
       .setQuery(request.param(Param.TEXT_QUERY))
       .setPage(request.mandatoryParamAsInt(Param.PAGE))
       .setPageSize(request.mandatoryParamAsInt(Param.PAGE_SIZE));
+
+    String searchQuery = usersRequest.getQuery();
+    checkRequest(searchQuery == null || searchQuery.length() >= SEARCH_QUERY_MIN_LENGTH,
+      "The '%s' parameter must have at least %d characters", Param.TEXT_QUERY, SEARCH_QUERY_MIN_LENGTH);
+    return usersRequest;
   }
 
   private static UsersWsResponse buildResponse(List<UserDto> users, List<UserPermissionDto> userPermissions, Paging paging) {

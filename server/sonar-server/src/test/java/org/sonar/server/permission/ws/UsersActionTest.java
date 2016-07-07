@@ -195,6 +195,14 @@ public class UsersActionTest {
       .execute();
   }
 
+  @Test
+  public void fail_if_search_query_is_too_short() {
+    expectedException.expect(BadRequestException.class);
+    expectedException.expectMessage("The 'q' parameter must have at least 3 characters");
+
+    ws.newRequest().setParam(Param.TEXT_QUERY, "ab").execute();
+  }
+
   private UserDto insertUser(UserDto userDto) {
     UserDto user = dbClient.userDao().insert(dbSession, userDto.setActive(true));
     dbSession.commit();

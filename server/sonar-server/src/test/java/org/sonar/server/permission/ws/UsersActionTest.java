@@ -91,12 +91,12 @@ public class UsersActionTest {
 
   @Test
   public void search_for_users_with_response_example() {
-    UserDto user1 = userDb.insertUser(new UserDto().setLogin("admin").setName("Administrator").setEmail("admin@admin.com"));
     UserDto user2 = userDb.insertUser(new UserDto().setLogin("george.orwell").setName("George Orwell").setEmail("george.orwell@1984.net"));
+    UserDto user1 = userDb.insertUser(new UserDto().setLogin("admin").setName("Administrator").setEmail("admin@admin.com"));
+    permissionDb.addGlobalPermissionToUser(SCAN_EXECUTION, user2.getId());
     permissionDb.addGlobalPermissionToUser(SYSTEM_ADMIN, user1.getId());
     permissionDb.addGlobalPermissionToUser(QUALITY_GATE_ADMIN, user1.getId());
     permissionDb.addGlobalPermissionToUser(QUALITY_PROFILE_ADMIN, user1.getId());
-    permissionDb.addGlobalPermissionToUser(SCAN_EXECUTION, user2.getId());
 
     String result = ws.newRequest().execute().getInput();
 
@@ -207,12 +207,12 @@ public class UsersActionTest {
   }
 
   private void insertUsers() {
-    UserDto user1 = insertUser(new UserDto().setLogin("login-1").setName("name-1").setEmail("email-1"));
-    UserDto user2 = insertUser(new UserDto().setLogin("login-2").setName("name-2").setEmail("email-2"));
     UserDto user3 = insertUser(new UserDto().setLogin("login-3").setName("name-3").setEmail("email-3"));
+    UserDto user2 = insertUser(new UserDto().setLogin("login-2").setName("name-2").setEmail("email-2"));
+    UserDto user1 = insertUser(new UserDto().setLogin("login-1").setName("name-1").setEmail("email-1"));
     insertUserRole(new UserPermissionDto().setPermission(SCAN_EXECUTION).setUserId(user1.getId()));
-    insertUserRole(new UserPermissionDto().setPermission(SCAN_EXECUTION).setUserId(user2.getId()));
     insertUserRole(new UserPermissionDto().setPermission(SYSTEM_ADMIN).setUserId(user3.getId()));
+    insertUserRole(new UserPermissionDto().setPermission(SCAN_EXECUTION).setUserId(user2.getId()));
     dbSession.commit();
   }
 }

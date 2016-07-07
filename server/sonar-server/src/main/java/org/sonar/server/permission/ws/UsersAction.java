@@ -32,7 +32,7 @@ import org.sonar.db.DbClient;
 import org.sonar.db.DbSession;
 import org.sonar.db.component.ComponentDto;
 import org.sonar.db.permission.PermissionQuery;
-import org.sonar.db.permission.UserRef;
+import org.sonar.db.user.UserDto;
 import org.sonar.db.user.UserPermissionDto;
 import org.sonar.server.permission.PermissionFinder;
 import org.sonar.server.user.UserSession;
@@ -100,7 +100,7 @@ public class UsersAction implements PermissionsWsAction {
       Optional<ComponentDto> project = dependenciesFinder.searchProject(dbSession, wsProjectRef);
       checkProjectAdminUserByComponentDto(userSession, project);
       PermissionQuery.Builder dbQuery = buildPermissionQuery(request, project);
-      List<UserRef> users = permissionFinder.findUsers(dbSession, dbQuery);
+      List<UserDto> users = permissionFinder.findUsers(dbSession, dbQuery);
       int total = dbClient.permissionDao().countUsersByQuery(dbSession, dbQuery.build());
       List<UserPermissionDto> userPermissions = permissionFinder.findUserPermissions(dbSession, dbQuery, users);
       Paging paging = Paging.forPageIndex(request.getPage()).withPageSize(request.getPageSize()).andTotal(total);
@@ -120,7 +120,7 @@ public class UsersAction implements PermissionsWsAction {
       .setPageSize(request.mandatoryParamAsInt(Param.PAGE_SIZE));
   }
 
-  private static UsersWsResponse buildResponse(List<UserRef> users, List<UserPermissionDto> userPermissions, Paging paging) {
+  private static UsersWsResponse buildResponse(List<UserDto> users, List<UserPermissionDto> userPermissions, Paging paging) {
     Multimap<Long, String> permissionsByUserId = TreeMultimap.create();
     userPermissions.forEach(userPermission -> permissionsByUserId.put(userPermission.getUserId(), userPermission.getPermission()));
 

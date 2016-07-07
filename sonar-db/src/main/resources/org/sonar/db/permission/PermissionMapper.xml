@@ -45,17 +45,20 @@
     u.login as login, u.name as name, u.email as email, lower(u.name), u.id
   </sql>
 
-  <select id="selectUsersByQuery" parameterType="map" resultType="org.sonar.db.permission.UserRef">
-    select distinct <include refid="userColumns" />
-    <include refid="usersByQuery"/>
-    order by lower(u.name), u.name, u.id
+  <select id="selectLoginsByPermissionQuery" parameterType="map" resultType="string">
+    select u.login
+    from (
+      select distinct <include refid="userColumns" />
+      <include refid="usersByQuery"/>
+      order by lower(u.name), u.name, u.id
+    ) u
   </select>
 
-  <select id="countUsersByQuery" parameterType="map" resultType="int">
+  <select id="countUsersByPermissionQuery" parameterType="map" resultType="int">
     select count(1)
     from (
       select distinct <include refid="userColumns" />
-      <include refid="usersByQuery"/>)
+      <include refid="usersByQuery"/>) u
   </select>
 
   <select id="selectUserPermissionsByQuery" parameterType="map" resultType="UserRole">

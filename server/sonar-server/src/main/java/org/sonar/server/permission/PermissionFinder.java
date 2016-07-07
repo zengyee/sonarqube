@@ -20,9 +20,8 @@
 package org.sonar.server.permission;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import java.util.ArrayList;
+import com.google.common.collect.Ordering;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,8 +40,9 @@ import org.sonar.db.permission.GroupWithPermissionDto;
 import org.sonar.db.permission.OldPermissionQuery;
 import org.sonar.db.permission.PermissionDao;
 import org.sonar.db.permission.PermissionQuery;
-import org.sonar.db.permission.UserRef;
 import org.sonar.db.permission.UserWithPermissionDto;
+import org.sonar.db.user.UserDao;
+import org.sonar.db.user.UserDto;
 import org.sonar.db.user.UserPermissionDto;
 import org.sonar.server.exceptions.NotFoundException;
 
@@ -56,10 +56,12 @@ public class PermissionFinder {
 
   private final PermissionDao permissionDao;
   private final ResourceDao resourceDao;
+  private final UserDao userDao;
 
   public PermissionFinder(DbClient dbClient) {
     this.resourceDao = dbClient.resourceDao();
     this.permissionDao = dbClient.permissionDao();
+    this.userDao = dbClient.userDao();
   }
 
   public List<UserWithPermissionDto> findUsersWithPermission(DbSession dbSession, OldPermissionQuery query) {
@@ -68,19 +70,18 @@ public class PermissionFinder {
     return permissionDao.selectUsers(dbSession, query, componentId, offset(query), limit);
   }
 
-  public List<UserRef> findUsers(DbSession dbSession, PermissionQuery.Builder dbQuery) {
-    List<UserRef> users = new ArrayList<>();
-    permissionDao.selectUsersByQuery(dbSession, dbQuery.build(), context -> users.add((UserRef) context.getResultObject()));
+  public List<UserDto> findUsers(DbSession dbSession, PermissionQuery.Builder dbQuery) {
+    List<String> orderedLogins = permissionDao.selectLoginsByPermissionQuery(dbSession, dbQuery.build());
 
-    return ImmutableList.copyOf(users);
+    return Ordering.explicit(orderedLogins).onResultOf(UserDto::getLogin).immutableSortedCopy(userDao.selectByLogins(dbSession, orderedLogins));
   }
 
-  public List<UserPermissionDto> findUserPermissions(DbSession dbSession, PermissionQuery.Builder dbQuery, List<UserRef> users) {
+  public List<UserPermissionDto> findUserPermissions(DbSession dbSession, PermissionQuery.Builder dbQuery, List<UserDto> users) {
     if (users.isEmpty()) {
       return emptyList();
     }
 
-    List<String> logins = users.stream().map(UserRef::getLogin).collect(Collectors.toList());
+    List<String> logins = users.stream().map(UserDto::getLogin).collect(Collectors.toList());
     return permissionDao.selectUserPermissionsByQuery(dbSession, dbQuery
       .setLogins(logins)
       .withPermissionOnly()

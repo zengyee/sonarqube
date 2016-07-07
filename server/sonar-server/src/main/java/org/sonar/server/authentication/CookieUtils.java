@@ -22,6 +22,7 @@ package org.sonar.server.authentication;
 
 import java.util.Arrays;
 import java.util.Optional;
+import javax.annotation.Nullable;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
@@ -39,5 +40,18 @@ public class CookieUtils {
     return Arrays.stream(cookies)
       .filter(cookie -> cookieName.equals(cookie.getName()))
       .findFirst();
+  }
+
+  public static Cookie createCookie(String name, @Nullable String value, boolean httpOnly, int expiry, HttpServletRequest request){
+    Cookie cookie = new Cookie(name, value);
+    cookie.setPath("/");
+    cookie.setSecure(isHttps(request));
+    cookie.setHttpOnly(httpOnly);
+    cookie.setMaxAge(expiry);
+    return cookie;
+  }
+
+  private static boolean isHttps(HttpServletRequest request){
+    return "https".equalsIgnoreCase(request.getHeader("X-Forwarded-Proto"));
   }
 }

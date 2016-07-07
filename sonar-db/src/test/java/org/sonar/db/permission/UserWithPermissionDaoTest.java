@@ -38,7 +38,7 @@ import org.sonar.db.user.UserDbTester;
 import org.sonar.db.user.UserDto;
 import org.sonar.db.user.UserPermissionDto;
 
-import static java.util.Collections.singletonList;
+import static com.google.common.collect.Lists.newArrayList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.sonar.api.web.UserRole.ADMIN;
@@ -212,23 +212,23 @@ public class UserWithPermissionDaoTest {
 
   @Test
   public void select_user_permissions() {
-    UserDto user = userDb.insertUser(newUserDto().setLogin("user-login"));
+    UserDto firstUser = userDb.insertUser(newUserDto().setLogin("user-login").setName("1-name"));
+    UserDto secondUser = userDb.insertUser(newUserDto().setLogin("second-login").setName("2-name"));
     UserDto anotherUser = userDb.insertUser(newUserDto().setLogin("another-login"));
     ComponentDto project = componentDb.insertComponent(newProjectDto());
-    permissionDb.addProjectPermissionToUser(UserRole.ADMIN, user.getId(), project.getId());
+    permissionDb.addProjectPermissionToUser(UserRole.ADMIN, firstUser.getId(), project.getId());
+    permissionDb.addProjectPermissionToUser(UserRole.ADMIN, secondUser.getId(), project.getId());
     permissionDb.addProjectPermissionToUser(UserRole.ADMIN, anotherUser.getId(), project.getId());
 
     PermissionQuery.Builder dbQuery = PermissionQuery.builder()
       .setComponentUuid(project.uuid())
-      .setLogins(singletonList("user-login"))
+      .setLogins(newArrayList("user-login", "second-login"))
       .withPermissionOnly();
     List<UserPermissionDto> result = selectUserPermissionsByQuery(dbQuery);
 
-    assertThat(result).hasSize(1);
-    UserPermissionDto userPermission = result.get(0);
-    assertThat(userPermission.getComponentId()).isEqualTo(project.getId());
-    assertThat(userPermission.getPermission()).isEqualTo(UserRole.ADMIN);
-    assertThat(userPermission.getUserId()).isEqualTo(user.getId());
+    assertThat(result).hasSize(2)
+      .extracting(UserPermissionDto::getUserId, UserPermissionDto::getPermission, UserPermissionDto::getComponentId)
+      .contains(tuple(firstUser.getId(), UserRole.ADMIN, project.getId()));
   }
 
   @Test
